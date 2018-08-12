@@ -3,7 +3,6 @@ import pandas as pd
 from scipy.stats import mode
 
 def squared_loss(groups, classes):
-
 	n_instances = float(sum([len(group) for group in groups]))
 	loss = 0
 	for group in groups:
@@ -13,14 +12,23 @@ def squared_loss(groups, classes):
 		score = 0
 		#value = mode(group[:,-1])[0][0]
 		value = np.mean(group[:,-1])
-		# print('Value',value)
-		# print('Label for group',group[:,-1], type(group[:,-1]) )
-		score = np.sum(abs(group[:,-1]-value) )
+		score = np.sum(abs(group[:,-1]-value))
 		loss+=score*(size/n_instances)
 	return loss
 
-
-#def absolute_loss()
+def absolute_loss(groups, classes):
+	n_instances = float(sum([len(group) for group in groups]))
+	loss = 0
+	for group in groups:
+		size = float(len(group))
+		if size == 0:
+			continue
+		score = 0
+		#value = mode(group[:,-1])[0][0]
+		value = np.mean(group[:,-1])
+		score = np.sum(abs(group[:,-1]-value))
+		loss+=score*(size/n_instances)
+	return loss
 
 def test_split(index, split_value, data):
 	left, right = np.array([]).reshape(0, data.shape[-1]), np.array([]).reshape(0, data.shape[-1])
@@ -31,6 +39,20 @@ def test_split(index, split_value, data):
 			right = np.vstack((right, row))
 
 	return left, right
+
+def cross_validation_split(dataset, n_folds):
+	dataset_split = list()
+	dataset_copy = list(dataset)
+	fold_size = int(dataset.shape[0]/n_fold)
+	for i in range(n_folds):
+		fold = list()
+		while len(fold)<fold_size:
+			index = randrange(len(dataset_copy))
+			fold.append(dataset_copy.pop(index))
+		dataset_split.append(fold)
+	dataset_split = np.array(dataset_split)
+	return dataset_split
+
 
 def get_split(data):
 	class_values = list(set(row[-1] for row in data))
@@ -61,16 +83,21 @@ def to_terminal(group):
 	#return outcomes
 
 def split(node, max_depth, min_size, depth):
+	# try:
 	left, right = node['groups']
 	del(node['groups'])
-	
+	# except TypeError:
+	# 	print(node['groups'])
+	# 	print(type(node['groups']))
+	# 	return
+
 	# if not left or not right:
 	# 	node['left'] = node['right'] = to_terminal(left + right)
 	# 	return
 
-	# if not isinstance(left,np.ndarray) or not isinstance(right,np.ndarray): # if the left_node and right_node are indeed numpy arrays
-	# 	node['left'] = node['right'] = to_terminal(left_node + right_node)
-	# 	return
+	if not isinstance(left,np.ndarray) or not isinstance(right,np.ndarray): # if the left_node and right_node are indeed numpy arrays
+		node['left'] = node['right'] = to_terminal(left + right)
+		return
 
 	if depth >= max_depth:
 		node['left'], node['right'] = to_terminal(left), to_terminal(right)
@@ -124,7 +151,13 @@ def accuracy_metric(actual, predicted):
 # 	print(' Got=%d' % ( prediction))
 
 data = np.loadtxt('Data2/train.csv', delimiter=',', skiprows=1)
-tree = build_tree(data, 20,10)
+np.random.shuffle(data)
+
+n_fold = 5
+max_depth = 20
+min_size = 10
+
+tree = build_tree(data,30,3)
 print("Tree", tree, type(tree) )
 print_tree(tree)
 
@@ -138,7 +171,7 @@ output = {'Id': Id , 'output': prediction}
 
 #print(accuracy_metric(data[:,-1], prediction))
 df = pd.DataFrame(data=output)
-df.to_csv("out.csv", sep = ',')
+df.to_csv("out.csv", sep = ',', index=False)
 
 
 
