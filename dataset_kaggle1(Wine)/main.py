@@ -160,7 +160,7 @@ def accuracy_metric(actual, predicted):
 		correct += (actual[i]-predicted[i])**2
 	return correct / float(len(actual))
 
-data = np.loadtxt('Data1/train.csv', delimiter=',', skiprows=1)
+data = np.loadtxt('train.csv', delimiter=',', skiprows=1)
 
 n_fold = 5
 max_depth = 20
@@ -196,7 +196,7 @@ print(best_error)
 
 
 
-test_data = np.loadtxt('Data1/test.csv', delimiter=',', skiprows=1)
+test_data = np.loadtxt('test.csv', delimiter=',', skiprows=1)
 prediction = []
 for row in test_data:
 	prediction.append(predict(best_tree, row))
@@ -206,7 +206,7 @@ output = {'Id': Id , 'quality': prediction}
 
 #print(accuracy_metric(data[:,-1], prediction))
 df = pd.DataFrame(data=output)
-df.to_csv("out.csv", sep = ',', index=False)
+df.to_csv("output.csv", sep = ',', index=False)
 
 
 
