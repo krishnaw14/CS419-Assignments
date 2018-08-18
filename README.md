@@ -1,6 +1,6 @@
 # CS419: Machine Learning - Assignments
 
-Assignment 1 - Decision Trees for Regression
+### Assignment 1 - Decision Trees for Regression
 
 Instructions for running: 
 
