@@ -12,3 +12,7 @@ or
 
 This command needs to be strictly followed
 
+### Assignment 2 - Logistic Regression
+
+Instructions and code to be added
+
