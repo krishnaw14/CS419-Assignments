@@ -1,11 +1,12 @@
 import numpy as np
+import math
  
 
 def square_hinge_loss(targets, outputs):
   # Write thee square hinge loss here
   count = 0
   for i in range(len(targets)):
-    count+=max(0,1-targets[i]*outputs[i])
+    count+=(1-targets[i]*outputs[i])**2
   return count
 
 def logistic_loss(targets, outputs):
@@ -19,7 +20,7 @@ def perceptron_loss(targets, outputs):
   # Write thee perceptron loss here
   count = 0
   for i in range(len(targets)):
-    count+=max(0,1-targets[i]*outputs[i])
+    count+=max(0,-targets[i]*outputs[i])
   return count
 
 def L2_regulariser(weights):
@@ -56,15 +57,19 @@ def logistic_grad(weights,inputs, targets, outputs):
 
 def perceptron_grad(weights,inputs, targets, outputs):
   # Write thee perceptron loss gradient here
+  print(weights)
+  print(type(weights))
   return np.random.random(11)
 
 def L2_grad(weights):
     # Write the L2 loss gradient here
-    return 0.00
+    gradient = 2*weights[1:]
+    return gradient
 
 def L4_grad(weights):
     # Write the L4 loss gradient here
-    return 0.00
+    gradient = 4*weights[1:]**3
+    return gradient
 
 loss_functions = {"square_hinge_loss" : square_hinge_loss, 
                   "logistic_loss" : logistic_loss,
