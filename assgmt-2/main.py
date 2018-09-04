@@ -114,15 +114,23 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
             
 
 def test(inputs, weights):
+    w = []
     outputs = classify(inputs, weights)
     probs = 1/(1+np.exp(-outputs))
     # this is done to get all terms in 0 or 1 You can change for -1 and 1
-    return np.round(probs)
+    w.append(probs)
+    print w
+    for i in range(len(probs)):
+        if probs[i]!=1:
+            probs[i]=0
+    probs = probs.astype(int)
+    probs[probs==0] = -1
+    return probs
 
 def write_csv_file(outputs, output_file):
     # dumps the output file
     with open(output_file, "w") as out_file:
-        out_file.write("ID, Output\n")
+        out_file.write("ID,Output\n")
         for i in range(len(outputs)):
             out_file.write("{}, {}".format(i+1, str(outputs[i])) + "\n")
 def get_data(data_file):
