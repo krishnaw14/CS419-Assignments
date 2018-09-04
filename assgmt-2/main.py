@@ -42,12 +42,12 @@ def get_objective_function(trainx,trainy,loss_type, regularizer_type, loss_weigh
     loss_function = utils.loss_functions[loss_type]
     if regularizer_type != None:
         regularizer_function = utils.regularizer_functions[regularizer_type]
-        
+
     def objective_function(weights):
         loss = 0
         
         inputs, targets = trainx,trainy
-        outputs = classify(inputs, weights)
+        outputs = classify(inputs, weights) 
         loss += loss_weight*loss_function(targets, outputs)
         if regularizer_type != None:
             # regulariser function is called from utils.py
@@ -102,7 +102,7 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
                                         method="CG", 
                                         jac=gradient_function,
                                         options={'disp': False,
-                                                 'maxiter': 1})
+                                                 'maxiter': 20})
             loss+=objective_function(trained_model_parameters.x)
             start_parameters=trained_model_parameters.x
         # prints the batch loss

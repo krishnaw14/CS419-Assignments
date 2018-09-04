@@ -31,35 +31,38 @@ def L4_regulariser(weights):
 
 def square_hinge_grad(weights,inputs, targets, outputs):
   # Write thee square hinge loss gradient here
-  gradient = np.zeros(weights.shape)
+  #print(weights)
+  gradient = np.zeros(len(weights), dtype=np.float32)
+  #print(inputs.shape)
   for i in range(len(weights)):
     gradient[i] = np.sum(2*(1-targets*outputs)*inputs[:,i])
+  #print(gradient)
   return gradient
 
 def logistic_grad(weights,inputs, targets, outputs):
   # Write thee logistic loss loss gradient here
-  gradient = np.zeros(weights.shape)
+  gradient = np.zeros(len(weights), dtype=np.float32)
   for i in range(len(weights)):
-    gradient[i] = np.sum( -inputs[:,i]*targets*np.exp(targets*outputs)/(1+np.exp(targets*outputs)) )
+    gradient[i] = np.sum( -1.0*inputs[:,i]*targets*np.exp(targets*outputs)/(1+np.exp(targets*outputs)) )
   return gradient
 
 def perceptron_grad(weights,inputs, targets, outputs):
   # Write thee perceptron loss gradient here
-  gradient = np.zeros(weights.shape)
+  gradient = np.zeros(len(weights), dtype=np.float32)
   for i in range(len(weights)):
     gradient[i] = np.sum(targets*inputs[:, i])
   return gradient
 
 def L2_grad(weights):
     # Write the L2 loss gradient here
-    gradient = np.zeros(weights.shape)
+    gradient = np.zeros(len(weights), dtype=np.float32)
     gradient[0] = 0
     gradient[1:] = 2*weights[1:]
     return gradient
 
 def L4_grad(weights):
     # Write the L4 loss gradient here
-    gradient = np.zeros(weights.shape)
+    gradient = np.zeros(len(weights), dtype=np.float32)
     gradient[0] = 0
     gradient[1:] = 4*weights[1:]**3
     return gradient
