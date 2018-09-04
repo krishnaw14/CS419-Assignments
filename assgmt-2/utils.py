@@ -5,7 +5,7 @@ def square_hinge_loss(targets, outputs):
   # Write thee square hinge loss here
   loss = 0
   for i in range(len(targets)):
-    count += max(1-target[i]*outputs[i],0)
+    loss += max(1-target[i]*outputs[i],0)
   return loss
 
 def logistic_loss(targets, outputs):
