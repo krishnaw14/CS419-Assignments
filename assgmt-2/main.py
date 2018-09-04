@@ -114,15 +114,21 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
             
 
 def test(inputs, weights):
+    w = []
     outputs = classify(inputs, weights)
     probs = 1/(1+np.exp(-outputs))
     # this is done to get all terms in 0 or 1 You can change for -1 and 1
-    return np.round(probs)
+    w.append(probs)
+    print w
+    for i in range(len(probs)):
+        if probs[i]!=1:
+            probs[i]=0
+    return probs
 
 def write_csv_file(outputs, output_file):
     # dumps the output file
     with open(output_file, "w") as out_file:
-        out_file.write("ID, Output\n")
+        out_file.write("ID,Output\n")
         for i in range(len(outputs)):
             out_file.write("{}, {}".format(i+1, str(outputs[i])) + "\n")
 def get_data(data_file):
@@ -151,8 +157,8 @@ if __name__=="__main__":
     parser.add_argument("--loss", action="store", dest="loss_type", type=str, help="Loss function to be used", default="logistic_loss")
     parser.add_argument("--regularizer", action="store", dest="regularizer_type", type=str, help="Regularizer to be used", default=None)
     parser.add_argument("--batch-size", action="store", dest="batch_size", type=int, help="Batch size for training", default=20)
-    parser.add_argument("--train-data", action="store", dest="train_data_file", type=str, help="Train data file", default="train.csv")
-    parser.add_argument("--test-data", action="store", dest="test_data_file", type=str, help="Test data file", default="test.csv")
+    parser.add_argument("--train-data", action="store", dest="train_data_file", type=str, help="Train data file", default="train2.csv")
+    parser.add_argument("--test-data", action="store", dest="test_data_file", type=str, help="Test data file", default="test2.csv")
     parser.add_argument("--loss-weight", action="store", dest="loss_weight", type=float, help="Relative weight", default=1.0)    
     args = parser.parse_args()
 

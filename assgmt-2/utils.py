@@ -39,7 +39,7 @@ def square_hinge_grad(weights,inputs, targets, outputs):
   gradient = np.zeros(weights.shape)
   for i in range(len(weights)):
     gradient[i] = np.sum(2*(1-targets*outputs)*inputs[:,i])
-  weights = weights-5*gradient
+  weights = weights-.1*gradient
   return gradient
 
 def logistic_grad(weights,inputs, targets, outputs):
@@ -62,7 +62,7 @@ def logistic_grad(weights,inputs, targets, outputs):
   #print count-(targets*outputs)
   for i in range(len(weights)):
     if math.isnan(gradient[i])!=True:
-     weights[i] = weights[i]-5*gradient[i]
+     weights[i] = weights[i]-.1*gradient[i]
   #print gradient - a
   return gradient
 
@@ -80,7 +80,7 @@ def L2_grad(weights):
     gradient = np.zeros(weights.shape)
     gradient[0] = 0
     gradient[1:] = 2*weights[1:]
-    weights -= 5*gradient
+    weights -= .1*gradient
     return gradient
 
 def L4_grad(weights):
@@ -88,7 +88,7 @@ def L4_grad(weights):
     gradient = np.zeros(weights.shape)
     gradient[0] = 0
     gradient[1:] = 4*weights[1:]**3
-    weights -= 5*gradient
+    weights -= .1*gradient
     return gradient
 
 loss_functions = {"square_hinge_loss" : square_hinge_loss, 
