@@ -3,7 +3,9 @@ import math
 
 def square_hinge_loss(targets, outputs):
   # Write thee square hinge loss here
-  hinge_loss = 1-targets*outputs
+  yfx = targets*outputs
+  hinge_loss = 1-yfx
+  hinge_loss[hinge_loss<0] = 0
   loss = np.sum(hinge_loss**2)
   return loss
 
@@ -33,8 +35,11 @@ def L4_regulariser(weights):
 def square_hinge_grad(weights,inputs, targets, outputs):
   # Write thee square hinge loss gradient here
   gradient = np.zeros(len(weights), dtype=np.float32)
+  hinge = 1-targets*outputs
+  hinge[hinge<0] = 0 
+
   for i in range(len(weights)):
-    gradient[i] = np.sum(2*(1-targets*outputs)*inputs[:,i])
+    gradient[i] = np.sum(2*(hinge)*inputs[:,i])
   #weights = weights-.1*gradient
   return gradient
 
