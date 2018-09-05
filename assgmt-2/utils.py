@@ -3,6 +3,7 @@ import math
 
 def square_hinge_loss(targets, outputs):
   # Write thee square hinge loss here
+  targets[targets<1] = -1
   yfx = targets*outputs
   hinge_loss = 1-yfx
   hinge_loss[hinge_loss<0] = 0
@@ -11,15 +12,23 @@ def square_hinge_loss(targets, outputs):
 
 def logistic_loss(targets, outputs):
   # Write thee logistic loss loss here
+  targets[targets<1] = -1
+  #print("targets = ", targets)
   loss = np.sum( np.log(1+np.exp(-targets*outputs)) )
+  print(loss)
   return loss
 
 def perceptron_loss(targets, outputs):
   # Write thee perceptron loss here
-  count = 0
-  for i in range(len(targets)):
-    count+=max(0,-targets[i]*outputs[i])
-  return count
+  targets[targets<1] = -1
+  loss = targets*outputs
+  loss[loss>=0] = 0
+  loss[loss<0] *=(-1)
+  # count = 0
+  # for i in range(len(targets)):
+  #   count+=max(0,-targets[i]*outputs[i])
+  #print("LOSS perceptron = ", targets*outputs)
+  return np.sum(loss)
 
 def L2_regulariser(weights):
     # Write the L2 loss here
@@ -29,7 +38,7 @@ def L2_regulariser(weights):
 def L4_regulariser(weights):
     # Write the L4 loss here
   loss = np.sum(weights[1:]**4)
-  return loss
+  return 10*loss
     #return 0.0
 
 def square_hinge_grad(weights,inputs, targets, outputs):
@@ -40,7 +49,6 @@ def square_hinge_grad(weights,inputs, targets, outputs):
 
   for i in range(len(weights)):
     gradient[i] = np.sum(2*(hinge)*inputs[:,i])
-  #weights = weights-.1*gradient
   return gradient
 
 def logistic_grad(weights,inputs, targets, outputs):
@@ -78,8 +86,9 @@ def perceptron_grad(weights,inputs, targets, outputs):
   gradient = np.zeros(len(weights), dtype=np.float32)
   flag = targets*outputs
   flag[flag>=0] = 0
+  flag /= (-outputs)
   for i in range(len(weights)):
-    gradient[i] = np.sum(flag*inputs[:,i]/outputs)
+    gradient[i] = np.sum(flag*inputs[:,i])
   return gradient
 
 def L2_grad(weights):
@@ -87,14 +96,14 @@ def L2_grad(weights):
     gradient = np.zeros(len(weights), dtype=np.float32)
     gradient[0] = 0
     gradient[1:] = 2*weights[1:]
-    weights -= .1*gradient
+    #weights -= .1*gradient
     return gradient
 
 def L4_grad(weights):
     # Write the L4 loss gradient here
     gradient = np.zeros(len(weights), dtype=np.float32)
     gradient[0] = 0
-    gradient[1:] = 4*weights[1:]**3
+    gradient[1:] = 5*4*weights[1:]**3
     weights -= .1*gradient
     return gradient
 

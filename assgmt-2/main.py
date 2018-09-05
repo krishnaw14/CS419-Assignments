@@ -17,6 +17,7 @@ class DataLoader(object):
         np.random.shuffle(data)
         data = np.array([[float(col) for col in row.split(',')] for row in data])
         input_data, targets = data[:, :-1], data[:, -1]
+        targets[targets<1] = -1
         input_data = np.hstack([input_data, np.ones((len(input_data), 1), dtype=np.float32)])
 
         self.num_features = input_data.shape[1]
@@ -85,7 +86,7 @@ def get_gradient_function(trainx,trainy,loss_type, regularizer_type, loss_weight
 def train(data_loader, loss_type, regularizer_type, loss_weight):
     initial_model_parameters = np.random.random((data_loader.num_features))
 
-    num_epochs=1000
+    num_epochs=100
     for i in range(num_epochs):
         loss=0
         if(i==0):
@@ -102,7 +103,7 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
                                         method="CG", 
                                         jac=gradient_function,
                                         options={'disp': False,
-                                                 'maxiter': 20})
+                                                 'maxiter': 5})
             loss+=objective_function(trained_model_parameters.x)
             start_parameters=trained_model_parameters.x
         # prints the batch loss
@@ -120,11 +121,10 @@ def test(inputs, weights):
     # this is done to get all terms in 0 or 1 You can change for -1 and 1
     w.append(probs)
     print w
-    for i in range(len(probs)):
-        if probs[i]!=1:
-            probs[i]=0
+    probs[probs<0.5] = -1
+    probs[probs>=0.5] = 1
     probs = probs.astype(int)
-    probs[probs==0] = -1
+    #probs[probs==0] = -1
     return probs
 
 def write_csv_file(outputs, output_file):
