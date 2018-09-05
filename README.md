@@ -14,5 +14,6 @@ This command needs to be strictly followed
 
 ### Assignment 2 - Logistic Regression
 
-Instructions and code to be added
+Implemented 3 loss functions (perceptron, square hinge, logistic) for binary classifcation problem.
+Instructions for running is in Assignment-2/instructions.txt file
 
