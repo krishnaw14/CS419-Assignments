@@ -3,6 +3,7 @@ from scipy.optimize import minimize
 
 import utils
 import numpy as np
+import matplotlib.pyplot as plt
 
 class DataLoader(object):
     # this class has a standard iterator declared
@@ -24,6 +25,8 @@ class DataLoader(object):
         self.current_batch_index = 0
         self.input_batches = np.split(input_data, len(input_data)//batch_size)
         self.target_batches = np.split(targets, len(targets)//batch_size)
+        self.input_data = input_data
+        self.targets = targets
 
     def __len__(self):
         return len(self.input_batches)
@@ -86,7 +89,9 @@ def get_gradient_function(trainx,trainy,loss_type, regularizer_type, loss_weight
 def train(data_loader, loss_type, regularizer_type, loss_weight):
     initial_model_parameters = np.random.random((data_loader.num_features))
 
-    num_epochs=100
+    num_epochs=1000
+    error_range = []
+    epoch_range = []
     for i in range(num_epochs):
         loss=0
         if(i==0):
@@ -106,9 +111,23 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
                                                  'maxiter': 5})
             loss+=objective_function(trained_model_parameters.x)
             start_parameters=trained_model_parameters.x
+        if i%1 == 0:
+            epoch_range.append(i)
+            targets = data_loader.targets
+            outputs = test(data_loader.input_data, start_parameters)
+            error = train_error(targets, outputs)
+            error_range.append(error)
         # prints the batch loss
         print("loss is  ",loss)
-        
+    
+    plt.plot(epoch_range, error_range)
+    x1,x2,y1,y2 = plt.axis()
+    plt.axis((x1,x2,min(error_range),max(error_range)))
+    plt.title("Train error vs number of epochs for perceptron loss (L2 regularized, batch_size = 64)")
+    plt.xlabel("Number of epochs")
+    plt.ylabel("Training error")
+    plt.show()
+
     print("Optimizer information:")
     print(trained_model_parameters)
     return trained_model_parameters.x
@@ -143,6 +162,13 @@ def get_data(data_file):
 
     return input_data
 
+def train_error(targets, outputs):
+    num_examples = len(targets)
+    error = np.sum(targets != outputs)
+    return error
+
+
+
 
 def main(args):
     train_data_loader = DataLoader(args.train_data_file, args.batch_size)
@@ -150,6 +176,10 @@ def main(args):
 
     trained_model_parameters = train(train_data_loader, args.loss_type, args.regularizer_type, args.loss_weight)
     test_data_output = test(test_data, trained_model_parameters)
+
+    #generating graphs
+    #generate_graph(train_data_loader.targets, test(train_data_loader.input_data, trained_model_parameters))
+
 
     write_csv_file(test_data_output, "output.csv")
 
