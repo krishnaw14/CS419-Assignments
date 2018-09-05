@@ -5,6 +5,7 @@ import utils
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class DataLoader(object):
     # this class has a standard iterator declared
     # __len__ returns the number of batches (size of the object)
@@ -89,7 +90,7 @@ def get_gradient_function(trainx,trainy,loss_type, regularizer_type, loss_weight
 def train(data_loader, loss_type, regularizer_type, loss_weight):
     initial_model_parameters = np.random.random((data_loader.num_features))
 
-    num_epochs=1000
+    num_epochs=100
     error_range = []
     epoch_range = []
     for i in range(num_epochs):
@@ -108,7 +109,7 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
                                         method="CG", 
                                         jac=gradient_function,
                                         options={'disp': False,
-                                                 'maxiter': 5})
+                                                 'maxiter': 1})
             loss+=objective_function(trained_model_parameters.x)
             start_parameters=trained_model_parameters.x
         if i%1 == 0:
@@ -123,7 +124,7 @@ def train(data_loader, loss_type, regularizer_type, loss_weight):
     plt.plot(epoch_range, error_range)
     x1,x2,y1,y2 = plt.axis()
     plt.axis((x1,x2,min(error_range),max(error_range)))
-    plt.title("Train error vs number of epochs for perceptron loss (L2 regularized, batch_size = 64)")
+    plt.title("Train error vs number of epochs for square_hinge loss (Non regularized, batch_size = 64)")
     plt.xlabel("Number of epochs")
     plt.ylabel("Training error")
     plt.show()
@@ -138,9 +139,7 @@ def test(inputs, weights):
     outputs = classify(inputs, weights)
     probs = 1/(1+np.exp(-outputs))
     # this is done to get all terms in 0 or 1 You can change for -1 and 1
-    w.append(probs)
-    print w
-    probs[probs<0.5] = -1
+    probs[probs<0.5] = 0
     probs[probs>=0.5] = 1
     probs = probs.astype(int)
     #probs[probs==0] = -1

@@ -1,0 +1,5 @@
+To run : 
+
+$ python main.py --loss perceptron_loss --batch-size 64 --train-data dataset1/train.csv --test-data dataset1/test.csv --loss-weight 1 --regularizer L2
+
+The above command will train the classifer as well as generate the plot of training error with number of epochs

@@ -45,6 +45,7 @@ def square_hinge_grad(weights,inputs, targets, outputs):
 
   for i in range(len(weights)):
     gradient[i] = np.sum(2*(hinge)*inputs[:,i])
+  #weights -= .1*gradient
   return gradient
 
 def logistic_grad(weights,inputs, targets, outputs):
