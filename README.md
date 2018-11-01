@@ -14,6 +14,6 @@ This command needs to be strictly followed
 
 ### Assignment 2 - Binary Classification with different loss functions
 
-Implemented 3 loss functions (perceptron, square hinge, logistic) for binary classifcation problem.     
-Instructions for running is in Assignment-2/instructions.txt file
+Implemented 3 loss functions (perceptron, square hinge, logistic) for binary classification problem.     
+Instructions for running is there in Assignment-2/instructions.txt file
 
